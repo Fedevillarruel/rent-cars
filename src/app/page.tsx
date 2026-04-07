@@ -15,7 +15,7 @@ import { useLang } from '@/lib/i18n';
 
 const STATS_KEYS = [
   { value: '500+', labelKey: 'Clientes satisfechos' },
-  { value: '15', labelKey: 'Vehículos premium' },
+  { value: '15', labelKey: 'Vehículos disponibles' },
   { value: '4.9★', labelKey: 'Calificación promedio' },
   { value: '24/7', labelKey: 'Asistencia en ruta' },
 ];

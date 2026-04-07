@@ -12,7 +12,7 @@ const STEPS = [
     subtitle: 'MiamiDrive — Car Rental Platform',
     description: (
       <>
-        Esta es una <strong className="text-white">demostración técnica funcional</strong> diseñada para explorar la plataforma de alquiler de autos de lujo en Miami.
+        Esta es una <strong className="text-white">demostración técnica funcional</strong> diseñada para explorar la plataforma de alquiler de autos en Miami.
       </>
     ),
     highlights: [

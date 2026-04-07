@@ -17,12 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MiamiDrive — Premium Car Rentals in Miami',
-  description: 'Alquila los mejores autos en Miami. Flota premium, proceso 100% online, entregas en aeropuerto y toda la ciudad. Demo desarrollado por Fedini.',
-  keywords: 'rent car miami, alquiler autos miami, car rental miami, luxury cars miami',
+  title: 'MiamiDrive — Car Rentals in Miami',
+  description: 'Alquila los mejores autos en Miami. Proceso 100% online, entregas en aeropuerto y toda la ciudad. Demo desarrollado por Fedini.',
+  keywords: 'rent car miami, alquiler autos miami, car rental miami, cars miami',
   openGraph: {
-    title: 'MiamiDrive — Premium Car Rentals in Miami',
-    description: 'Alquila los mejores autos en Miami. Flota premium, proceso 100% online.',
+    title: 'MiamiDrive — Car Rentals in Miami',
+    description: 'Alquila los mejores autos en Miami. Proceso 100% online, entregas en aeropuerto.',
     type: 'website',
   },
 };

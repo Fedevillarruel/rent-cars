@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const VALUES = [
   { icon: Shield, title: 'Confianza total', description: 'Flota verificada, seguros reales y procesos transparentes en cada paso de tu reserva.' },
-  { icon: Award, title: 'Experiencia premium', description: 'Vehículos de alta gama mantenidos al día para que viajes con la máxima comodidad y estilo.' },
+  { icon: Award, title: 'Buena experiencia', description: 'Vehículos bien mantenidos para que viajes con comodidad y tranquilidad en cada recorrido.' },
   { icon: Heart, title: 'Atención real', description: 'Hay personas reales detrás de cada consulta. Tu experiencia es nuestra prioridad absoluta.' },
   { icon: TrendingUp, title: 'Innovación constante', description: 'Plataforma 100% digital, booking en minutos, sin filas ni papelerío innecesario.' },
 ];
@@ -22,7 +22,7 @@ const STATS = [
 
 const TEAM = [
   { name: 'Carlos Mendoza', role: 'CEO & Fundador', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop', bio: '12 años en la industria automotriz de Florida.' },
-  { name: 'Ana Rodríguez', role: 'Directora de Operaciones', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop', bio: 'Experta en logística y gestión de flotas premium.' },
+  { name: 'Ana Rodríguez', role: 'Directora de Operaciones', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop', bio: 'Experta en logística y gestión de flotas.' },
   { name: 'Marcus Williams', role: 'Head of Customer Experience', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop', bio: 'Apasionado por transformar cada alquiler en una experiencia memorable.' },
 ];
 
@@ -56,7 +56,7 @@ export default function NosotrosPage() {
                 <p>Hoy, seis años después, MiamiDrive es la opción preferida de viajeros que buscan comodidad, confianza y estilo en sus recorridos por South Florida.</p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
-                {['Fundada en 2018', 'Miami-based', '100% Digital', 'Flota premium'].map(tag => (
+                {['Fundada en 2018', 'Miami-based', '100% Digital', 'Flota completa'].map(tag => (
                   <span key={tag} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm">
                     <CheckCircle className="w-3.5 h-3.5 text-[var(--primary)]" />
                     {tag}

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Car, ExternalLink, Phone, Mail, MapPin } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 
@@ -28,7 +29,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-5">
-              {t.hero_subtitle}
+              {t.footer_desc}
             </p>
             <div className="flex items-center gap-3">
               {[
@@ -141,7 +142,15 @@ export default function Footer() {
             className="flex items-center gap-1.5 text-[11px] text-gray-600 hover:text-[var(--primary)] transition-colors tracking-widest uppercase font-medium"
           >
             {t.footer_dev}
-            <span className="text-[var(--primary)] font-bold tracking-wide normal-case">◆ Fedini</span>
+            <Image
+              src="https://jtujtceemarxedagazge.supabase.co/storage/v1/object/public/business-photos/app-icon-logos/logo2.png"
+              alt="Fedini"
+              width={18}
+              height={18}
+              className="rounded w-[18px] h-[18px] object-contain"
+              unoptimized
+            />
+            <span className="text-[var(--primary)] font-bold tracking-wide normal-case">Fedini</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>

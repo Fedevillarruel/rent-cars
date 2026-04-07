@@ -74,7 +74,7 @@ function CatalogoContent() {
           <h1 className="text-white text-4xl sm:text-5xl font-black tracking-tight mb-4">Catálogo de Vehículos</h1>
           <p className="text-gray-400 text-lg max-w-2xl">
             {filtered.length} vehículo{filtered.length !== 1 ? 's' : ''} disponible{filtered.length !== 1 ? 's' : ''} ·
-            Flota premium en Miami
+            Miami, FL
           </p>
         </div>
       </div>

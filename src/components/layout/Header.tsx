@@ -3,23 +3,25 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Car, ExternalLink, ChevronDown } from 'lucide-react';
+import { Menu, X, Car, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isAdminLoggedIn } from '@/lib/storage';
-
-const NAV_LINKS = [
-  { href: '/', label: 'Inicio' },
-  { href: '/catalogo', label: 'Catálogo' },
-  { href: '/nosotros', label: 'Nosotros' },
-  { href: '/como-funciona', label: 'Cómo Funciona' },
-  { href: '/contacto', label: 'Contacto' },
-];
+import { useLang, Lang } from '@/lib/i18n';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [adminLoggedIn, setAdminLoggedIn] = useState(false);
   const pathname = usePathname();
+  const { lang, setLang, t } = useLang();
+
+  const NAV_LINKS = [
+    { href: '/', label: t.nav_home },
+    { href: '/catalogo', label: t.nav_catalog },
+    { href: '/nosotros', label: t.nav_about },
+    { href: '/como-funciona', label: t.nav_how },
+    { href: '/contacto', label: t.nav_contact },
+  ];
 
   useEffect(() => {
     setAdminLoggedIn(isAdminLoggedIn());
@@ -78,6 +80,23 @@ export default function Header() {
 
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Language selector */}
+            <div className="flex items-center rounded-lg border border-white/10 overflow-hidden">
+              {(['es', 'en'] as Lang[]).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={cn(
+                    'px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all duration-200',
+                    lang === l
+                      ? 'bg-[rgba(200,169,110,0.15)] text-[var(--primary)]'
+                      : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+                  )}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
             {/* Demo badge */}
             <a
               href="https://fedini.app"
@@ -146,6 +165,26 @@ export default function Header() {
               </Link>
             ))}
             <div className="border-t border-white/5 mt-2 pt-4 flex flex-col gap-2">
+              {/* Language selector mobile */}
+              <div className="flex items-center gap-2 px-4 py-2">
+                <span className="text-gray-600 text-xs uppercase tracking-wide">Idioma / Language</span>
+                <div className="flex items-center rounded-lg border border-white/10 overflow-hidden ml-auto">
+                  {(['es', 'en'] as Lang[]).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => setLang(l)}
+                      className={cn(
+                        'px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all duration-200',
+                        lang === l
+                          ? 'bg-[rgba(200,169,110,0.15)] text-[var(--primary)]'
+                          : 'text-gray-500 hover:text-gray-300'
+                      )}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <a
                 href="https://fedini.app"
                 target="_blank"

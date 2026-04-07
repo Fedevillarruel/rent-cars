@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Car, ExternalLink, Phone, Mail, MapPin } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
 export default function Footer() {
+  const { t } = useLang();
+
   return (
     <footer className="bg-[#060609] border-t border-[rgba(200,169,110,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,7 +28,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-5">
-              La experiencia premium de alquiler de autos en Miami. Flota de lujo, servicio 5 estrellas y precios transparentes.
+              {t.hero_subtitle}
             </p>
             <div className="flex items-center gap-3">
               {[
@@ -44,14 +49,14 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">Explorar</h3>
+            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">{t.footer_explore}</h3>
             <ul className="space-y-3">
               {[
-                { href: '/catalogo', label: 'Catálogo de Autos' },
-                { href: '/catalogo?categoria=luxury', label: 'Vehículos de Lujo' },
-                { href: '/catalogo?categoria=sports', label: 'Deportivos' },
-                { href: '/catalogo?categoria=suv', label: 'SUVs' },
-                { href: '/como-funciona', label: 'Cómo Funciona' },
+                { href: '/catalogo', label: t.nav_catalog },
+                { href: '/catalogo?categoria=luxury', label: t.cat_luxury },
+                { href: '/catalogo?categoria=sports', label: t.cat_sports },
+                { href: '/catalogo?categoria=suv', label: t.cat_suv },
+                { href: '/como-funciona', label: t.nav_how },
               ].map(link => (
                 <li key={link.href}>
                   <Link
@@ -67,14 +72,14 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">Compañía</h3>
+            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">{t.footer_company}</h3>
             <ul className="space-y-3">
               {[
-                { href: '/nosotros', label: 'Sobre Nosotros' },
-                { href: '/contacto', label: 'Contacto' },
-                { href: '/faq', label: 'Preguntas Frecuentes' },
-                { href: '/terminos', label: 'Términos y Condiciones' },
-                { href: '/privacidad', label: 'Política de Privacidad' },
+                { href: '/nosotros', label: t.nav_about },
+                { href: '/contacto', label: t.nav_contact },
+                { href: '/faq', label: 'FAQ' },
+                { href: '/terminos', label: t.footer_terms },
+                { href: '/privacidad', label: t.footer_privacy },
               ].map(link => (
                 <li key={link.href}>
                   <Link
@@ -90,7 +95,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">Contacto</h3>
+            <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">{t.footer_contact}</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[var(--primary)] mt-0.5 flex-shrink-0" />
@@ -127,7 +132,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/5 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-gray-600 text-xs">
-            © 2026 MiamiDrive Car Rentals. Todos los derechos reservados.
+            © 2026 MiamiDrive Car Rentals. {t.footer_rights}
           </p>
           <a
             href="https://fedini.app"
@@ -135,7 +140,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[11px] text-gray-600 hover:text-[var(--primary)] transition-colors tracking-widest uppercase font-medium"
           >
-            Desarrollado por
+            {t.footer_dev}
             <span className="text-[var(--primary)] font-bold tracking-wide normal-case">◆ Fedini</span>
             <ExternalLink className="w-3 h-3" />
           </a>

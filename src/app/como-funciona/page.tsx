@@ -60,10 +60,6 @@ export default function ComoFuncionaPage() {
       <section className="py-20 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(200,169,110,0.03)] to-transparent" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-[rgba(200,169,110,0.2)] text-[var(--primary)] text-sm font-medium mb-6">
-            <Clock className="w-4 h-4" />
-            Reservá en menos de 5 minutos
-          </div>
           <h1 className="text-white text-5xl md:text-6xl font-black tracking-tight mb-6">
             Simple, rápido y
             <br />

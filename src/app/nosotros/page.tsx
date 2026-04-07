@@ -33,10 +33,6 @@ export default function NosotrosPage() {
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(200,169,110,0.04)] to-transparent" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-[rgba(200,169,110,0.2)] text-[var(--primary)] text-sm font-medium mb-6">
-            <MapPin className="w-4 h-4" />
-            Miami, Florida · Desde 2018
-          </div>
           <h1 className="text-white text-5xl md:text-6xl font-black tracking-tight mb-6">
             La historia detrás de
             <br />

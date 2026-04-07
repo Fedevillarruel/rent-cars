@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import DemoModal from '@/components/DemoModal';
+import { LangProvider } from '@/lib/i18n';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,10 +35,12 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="antialiased">
-        <Header />
-        <DemoModal />
-        <main>{children}</main>
-        <Footer />
+        <LangProvider>
+          <Header />
+          <DemoModal />
+          <main>{children}</main>
+          <Footer />
+        </LangProvider>
       </body>
     </html>
   );

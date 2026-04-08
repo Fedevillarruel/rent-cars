@@ -13,15 +13,15 @@ import { today, tomorrow } from '@/lib/utils';
 import CarCard from '@/components/CarCard';
 import { useLang } from '@/lib/i18n';
 
-const STATS_KEYS = [
-  { value: '500+', labelKey: 'Clientes satisfechos' },
-  { value: '15', labelKey: 'Vehículos disponibles' },
-  { value: '4.9★', labelKey: 'Calificación promedio' },
-  { value: '24/7', labelKey: 'Asistencia en ruta' },
-];
-
 export default function HomePage() {
   const { t } = useLang();
+
+  const STATS_KEYS = [
+    { value: '500+', label: t.home_stat1 },
+    { value: '15', label: t.home_stat2 },
+    { value: '4.9★', label: t.home_stat3 },
+    { value: '24/7', label: t.home_stat4 },
+  ];
   const [featuredCars, setFeaturedCars] = useState<Car[]>([]);
   const [startDate, setStartDate] = useState(today());
   const [endDate, setEndDate] = useState(tomorrow());
@@ -110,7 +110,7 @@ export default function HomePage() {
             {STATS_KEYS.map((stat, i) => (
               <div key={i} className="text-center">
                 <p className="text-white font-black text-2xl sm:text-3xl">{stat.value}</p>
-                <p className="text-gray-500 text-xs font-medium mt-0.5">{stat.labelKey}</p>
+                <p className="text-gray-500 text-xs font-medium mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>

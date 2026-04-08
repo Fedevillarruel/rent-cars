@@ -12,17 +12,22 @@ import { Car } from '@/lib/types';
 import { getCars } from '@/lib/storage';
 import { formatCurrency, getCategoryLabel, getCategoryColor, cn } from '@/lib/utils';
 import BookingFlow from '@/components/BookingFlow';
-
-const FUEL_LABELS: Record<string, string> = {
-  gasoline: 'Nafta', diesel: 'Diesel', hybrid: 'Híbrido', electric: 'Eléctrico',
-};
+import { useLang } from '@/lib/i18n';
 
 export default function CarDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { t, lang } = useLang();
   const [car, setCar] = useState<Car | null>(null);
   const [imgIdx, setImgIdx] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
+
+  const FUEL_LABELS: Record<string, string> = {
+    gasoline: t.detail_fuel_gasoline,
+    diesel: t.detail_fuel_diesel,
+    hybrid: t.detail_fuel_hybrid,
+    electric: t.detail_fuel_electric,
+  };
 
   useEffect(() => {
     const cars = getCars();
@@ -32,7 +37,7 @@ export default function CarDetailPage() {
   }, [params.id, router]);
 
   if (!car) {
-    return <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center"><div className="text-gray-400">Cargando...</div></div>;
+    return <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center"><div className="text-gray-400">{t.detail_loading}</div></div>;
   }
 
   if (showBooking) {
@@ -40,7 +45,7 @@ export default function CarDetailPage() {
       <div className="min-h-screen bg-[#0a0a0f] pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <button onClick={() => setShowBooking(false)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm mb-8">
-            <ArrowLeft className="w-4 h-4" /> Volver al detalle
+            <ArrowLeft className="w-4 h-4" /> {t.detail_back_to_detail}
           </button>
           <div className="glass rounded-2xl p-6 sm:p-8 border border-[rgba(200,169,110,0.1)]">
             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/8">
@@ -50,7 +55,7 @@ export default function CarDetailPage() {
               <div>
                 <p className="text-gray-500 text-xs font-medium">{car.brand}</p>
                 <h2 className="text-white font-bold text-xl">{car.model} {car.year}</h2>
-                <p className="text-[var(--primary)] font-semibold">{formatCurrency(car.pricePerDay)}/día</p>
+                <p className="text-[var(--primary)] font-semibold">{formatCurrency(car.pricePerDay)}{t.detail_per_day}</p>
               </div>
             </div>
             <BookingFlow car={car} onClose={() => setShowBooking(false)} />
@@ -65,9 +70,9 @@ export default function CarDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-gray-300 transition-colors">Inicio</Link>
+          <Link href="/" className="hover:text-gray-300 transition-colors">{t.detail_home}</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/catalogo" className="hover:text-gray-300 transition-colors">Catálogo</Link>
+          <Link href="/catalogo" className="hover:text-gray-300 transition-colors">{t.nav_catalog}</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <span className="text-gray-400">{car.brand} {car.model}</span>
         </div>
@@ -152,26 +157,26 @@ export default function CarDetailPage() {
                 ))}
               </div>
               <span className="text-white font-semibold">{car.rating}</span>
-              <span className="text-gray-500 text-sm">({car.totalRentals} alquileres)</span>
+              <span className="text-gray-500 text-sm">({car.totalRentals} {t.detail_rentals})</span>
             </div>
 
             {/* Price */}
             <div className="flex items-end gap-3 mb-6">
               <div>
                 <p className="text-[var(--primary)] font-black text-5xl">{formatCurrency(car.pricePerDay)}</p>
-                <p className="text-gray-500 text-sm mt-1">por día · Millas {car.mileage === 'unlimited' ? 'ilimitadas' : car.mileage}</p>
+                <p className="text-gray-500 text-sm mt-1">{t.detail_per_day} · {t.detail_miles_label} {car.mileage === 'unlimited' ? t.detail_mileage_unlimited : car.mileage}</p>
               </div>
             </div>
 
             {/* Specs */}
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
-                { icon: Users, label: 'Pasajeros', value: `${car.passengers} personas` },
-                { icon: Briefcase, label: 'Maletas', value: `${car.luggage} maletas` },
-                { icon: DoorOpen, label: 'Puertas', value: `${car.doors} puertas` },
-                { icon: Settings, label: 'Transmisión', value: car.transmission === 'automatic' ? 'Automático' : 'Manual' },
-                { icon: Fuel, label: 'Motor', value: car.engine },
-                { icon: Fuel, label: 'Combustible', value: FUEL_LABELS[car.fuelType] },
+                { icon: Users, label: t.detail_passengers, value: `${car.passengers} ${lang === 'en' ? 'passengers' : 'personas'}` },
+                { icon: Briefcase, label: t.detail_luggage, value: `${car.luggage} ${lang === 'en' ? 'bags' : 'maletas'}` },
+                { icon: DoorOpen, label: t.detail_doors, value: `${car.doors} ${lang === 'en' ? 'doors' : 'puertas'}` },
+                { icon: Settings, label: t.detail_transmission, value: car.transmission === 'automatic' ? t.detail_automatic : t.detail_manual },
+                { icon: Fuel, label: t.detail_engine, value: car.engine },
+                { icon: Fuel, label: t.detail_fuel, value: FUEL_LABELS[car.fuelType] ?? car.fuelType },
               ].map(({ icon: Icon, label, value }, i) => (
                 <div key={i} className="p-3 rounded-xl bg-white/3 border border-white/6">
                   <Icon className="w-4 h-4 text-[var(--primary)] mb-2" />
@@ -183,7 +188,7 @@ export default function CarDetailPage() {
 
             {/* Features */}
             <div className="mb-6">
-              <h3 className="text-white font-semibold text-sm mb-3">Equipamiento incluido</h3>
+              <h3 className="text-white font-semibold text-sm mb-3">{t.detail_equipment}</h3>
               <div className="grid grid-cols-2 gap-2">
                 {car.features.map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
@@ -203,10 +208,10 @@ export default function CarDetailPage() {
               className="btn-primary w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2"
             >
               <Calendar className="w-5 h-5" />
-              Reservar este vehículo
+              {t.detail_book_btn}
             </button>
             <p className="text-center text-gray-600 text-xs mt-3">
-              Confirmación inmediata · Cancelación gratuita hasta 48h antes
+              {t.detail_cancellation}
             </p>
           </div>
         </div>

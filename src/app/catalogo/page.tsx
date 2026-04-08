@@ -7,6 +7,7 @@ import { Car } from '@/lib/types';
 import { getCars } from '@/lib/storage';
 import { getCategoryLabel, cn } from '@/lib/utils';
 import CarCard from '@/components/CarCard';
+import { useLang } from '@/lib/i18n';
 
 const CATEGORIES = ['economy', 'compact', 'suv', 'luxury', 'sports', 'van'];
 const TRANSMISSIONS = ['automatic', 'manual'];
@@ -14,6 +15,7 @@ const FUEL_TYPES = ['gasoline', 'diesel', 'hybrid', 'electric'];
 
 function CatalogoContent() {
   const searchParams = useSearchParams();
+  const { t, lang } = useLang();
   const [cars, setCars] = useState<Car[]>([]);
   const [filtered, setFiltered] = useState<Car[]>([]);
   const [search, setSearch] = useState('');
@@ -70,10 +72,10 @@ function CatalogoContent() {
       {/* Header */}
       <div className="bg-[#07070d] border-b border-[rgba(200,169,110,0.08)] py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-[var(--primary)] text-sm font-semibold tracking-widest uppercase mb-2">Nuestra Flota</p>
-          <h1 className="text-white text-4xl sm:text-5xl font-black tracking-tight mb-4">Catálogo de Vehículos</h1>
+          <p className="text-[var(--primary)] text-sm font-semibold tracking-widest uppercase mb-2">{t.fleet_label}</p>
+          <h1 className="text-white text-4xl sm:text-5xl font-black tracking-tight mb-4">{lang === 'en' ? 'Vehicle Catalog' : 'Catálogo de Vehículos'}</h1>
           <p className="text-gray-400 text-lg max-w-2xl">
-            {filtered.length} vehículo{filtered.length !== 1 ? 's' : ''} disponible{filtered.length !== 1 ? 's' : ''} ·
+            {filtered.length} {lang === 'en' ? `vehicle${filtered.length !== 1 ? 's' : ''} available` : `vehículo${filtered.length !== 1 ? 's' : ''} disponible${filtered.length !== 1 ? 's' : ''}`} ·
             Miami, FL
           </p>
         </div>
@@ -86,7 +88,7 @@ function CatalogoContent() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
-              placeholder="Buscar por marca, modelo..."
+              placeholder={lang === 'en' ? 'Search by brand, model...' : 'Buscar por marca, modelo...'}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[var(--primary)] transition-colors"
@@ -107,7 +109,7 @@ function CatalogoContent() {
             )}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filtros
+            {lang === 'en' ? 'Filters' : 'Filtros'}
             {hasFilters && <span className="w-2 h-2 rounded-full bg-[var(--primary)]" />}
           </button>
           <div className="relative">
@@ -116,10 +118,10 @@ function CatalogoContent() {
               onChange={e => setSortBy(e.target.value)}
               className="pl-4 pr-10 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-sm focus:outline-none focus:border-[var(--primary)] transition-colors appearance-none"
             >
-              <option value="relevance" className="bg-[#111]">Relevancia</option>
-              <option value="price_asc" className="bg-[#111]">Precio: menor a mayor</option>
-              <option value="price_desc" className="bg-[#111]">Precio: mayor a menor</option>
-              <option value="rating" className="bg-[#111]">Mejor valorados</option>
+              <option value="relevance" className="bg-[#111]">{lang === 'en' ? 'Relevance' : 'Relevancia'}</option>
+              <option value="price_asc" className="bg-[#111]">{lang === 'en' ? 'Price: low to high' : 'Precio: menor a mayor'}</option>
+              <option value="price_desc" className="bg-[#111]">{lang === 'en' ? 'Price: high to low' : 'Precio: mayor a menor'}</option>
+              <option value="rating" className="bg-[#111]">{lang === 'en' ? 'Best rated' : 'Mejor valorados'}</option>
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
           </div>
@@ -131,9 +133,9 @@ function CatalogoContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Category */}
               <div>
-                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">Categoría</label>
+                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">{lang === 'en' ? 'Category' : 'Categoría'}</label>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={() => setCategory('')} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', !category ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>Todos</button>
+                  <button onClick={() => setCategory('')} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', !category ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>{lang === 'en' ? 'All' : 'Todos'}</button>
                   {CATEGORIES.map(cat => (
                     <button key={cat} onClick={() => setCategory(cat === category ? '' : cat)} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', category === cat ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>
                       {getCategoryLabel(cat)}
@@ -145,7 +147,7 @@ function CatalogoContent() {
               {/* Price */}
               <div>
                 <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">
-                  Precio máx: <span className="text-[var(--primary)]">${priceMax === 1000 ? 'Sin límite' : priceMax + '/día'}</span>
+                  {lang === 'en' ? 'Max price:' : 'Precio máx:'} <span className="text-[var(--primary)]">${priceMax === 1000 ? (lang === 'en' ? 'No limit' : 'Sin límite') : priceMax + (lang === 'en' ? '/day' : '/día')}</span>
                 </label>
                 <input
                   type="range"
@@ -163,11 +165,11 @@ function CatalogoContent() {
 
               {/* Passengers */}
               <div>
-                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">Pasajeros mínimos</label>
+                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">{lang === 'en' ? 'Min. passengers' : 'Pasajeros mínimos'}</label>
                 <div className="flex flex-wrap gap-2">
                   {[0, 2, 4, 5, 7].map(p => (
                     <button key={p} onClick={() => setPassengers(p)} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', passengers === p ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>
-                      {p === 0 ? 'Todos' : `${p}+`}
+                      {p === 0 ? (lang === 'en' ? 'All' : 'Todos') : `${p}+`}
                     </button>
                   ))}
                 </div>
@@ -175,12 +177,14 @@ function CatalogoContent() {
 
               {/* Fuel */}
               <div>
-                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">Combustible</label>
+                <label className="block text-xs text-gray-500 mb-3 font-medium tracking-wide uppercase">{lang === 'en' ? 'Fuel type' : 'Combustible'}</label>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={() => setFuelType('')} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', !fuelType ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>Todos</button>
+                  <button onClick={() => setFuelType('')} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all', !fuelType ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>{lang === 'en' ? 'All' : 'Todos'}</button>
                   {FUEL_TYPES.map(ft => (
                     <button key={ft} onClick={() => setFuelType(ft === fuelType ? '' : ft)} className={cn('px-3 py-1.5 rounded-lg border text-xs font-medium transition-all capitalize', fuelType === ft ? 'border-[var(--primary)] bg-[rgba(200,169,110,0.1)] text-[var(--primary)]' : 'border-white/10 text-gray-500 hover:border-white/20')}>
-                      {ft === 'gasoline' ? 'Nafta' : ft === 'hybrid' ? 'Híbrido' : ft === 'electric' ? 'Eléctrico' : 'Diesel'}
+                      {lang === 'en'
+                        ? ft.charAt(0).toUpperCase() + ft.slice(1)
+                        : ft === 'gasoline' ? 'Nafta' : ft === 'hybrid' ? 'Híbrido' : ft === 'electric' ? 'Eléctrico' : 'Diesel'}
                     </button>
                   ))}
                 </div>
@@ -190,7 +194,7 @@ function CatalogoContent() {
             {hasFilters && (
               <div className="mt-4 pt-4 border-t border-white/8 flex justify-end">
                 <button onClick={clearFilters} className="text-sm text-[var(--primary)] hover:text-[var(--primary-light)] transition-colors flex items-center gap-1">
-                  <X className="w-3.5 h-3.5" /> Limpiar filtros
+                  <X className="w-3.5 h-3.5" /> {lang === 'en' ? 'Clear filters' : 'Limpiar filtros'}
                 </button>
               </div>
             )}
@@ -210,7 +214,7 @@ function CatalogoContent() {
                   : 'border-white/10 bg-white/3 text-gray-400 hover:border-white/20 hover:text-white'
               )}
             >
-              {cat === '' ? 'Todos' : getCategoryLabel(cat)}
+              {cat === '' ? (lang === 'en' ? 'All' : 'Todos') : getCategoryLabel(cat)}
             </button>
           ))}
         </div>
@@ -219,10 +223,10 @@ function CatalogoContent() {
         {filtered.length === 0 ? (
           <div className="text-center py-24">
             <div className="text-6xl mb-4">🚗</div>
-            <h3 className="text-white text-xl font-bold mb-2">Sin resultados</h3>
-            <p className="text-gray-400 text-sm">No encontramos vehículos con esos filtros.</p>
+            <h3 className="text-white text-xl font-bold mb-2">{lang === 'en' ? 'No results' : 'Sin resultados'}</h3>
+            <p className="text-gray-400 text-sm">{lang === 'en' ? 'We couldn\'t find vehicles with those filters.' : 'No encontramos vehículos con esos filtros.'}</p>
             <button onClick={clearFilters} className="mt-4 btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold">
-              Ver todos
+              {lang === 'en' ? 'View all' : 'Ver todos'}
             </button>
           </div>
         ) : (
@@ -237,7 +241,7 @@ function CatalogoContent() {
 
 export default function CatalogoPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center"><div className="text-gray-400">Cargando catálogo...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center"><div className="text-gray-400">Loading...</div></div>}>
       <CatalogoContent />
     </Suspense>
   );

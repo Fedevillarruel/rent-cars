@@ -1,29 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar, MapPin, Shield, Package, User, CreditCard, Check, ChevronRight, ChevronLeft, Info, AlertCircle } from 'lucide-react';
+import { Calendar, Shield, Package, User, CreditCard, Check, ChevronRight, ChevronLeft, Info, AlertCircle } from 'lucide-react';
 import { Car, InsurancePlan, Extra, Booking } from '@/lib/types';
 import { LOCATIONS, INSURANCE_PLANS, EXTRAS } from '@/lib/data';
 import { formatCurrency, daysBetween, generateId, today, tomorrow, formatDate, cn } from '@/lib/utils';
 import { addBooking, isCarAvailable } from '@/lib/storage';
+import { useLang } from '@/lib/i18n';
 
 interface BookingFlowProps {
   car: Car;
   onClose?: () => void;
 }
 
-const STEPS = [
-  { id: 1, label: 'Fechas y Lugar', icon: Calendar },
-  { id: 2, label: 'Seguro', icon: Shield },
-  { id: 3, label: 'Adicionales', icon: Package },
-  { id: 4, label: 'Tus Datos', icon: User },
-  { id: 5, label: 'Pago', icon: CreditCard },
-];
-
 export default function BookingFlow({ car, onClose }: BookingFlowProps) {
   const router = useRouter();
+  const { t } = useLang();
   const [step, setStep] = useState(1);
+
+  const STEPS = [
+    { id: 1, label: t.book_step1, icon: Calendar },
+    { id: 2, label: t.book_step2, icon: Shield },
+    { id: 3, label: t.book_step3, icon: Package },
+    { id: 4, label: t.book_step4, icon: User },
+    { id: 5, label: t.book_step5, icon: CreditCard },
+  ];
 
   // Step 1
   const [startDate, setStartDate] = useState(today());
@@ -83,10 +85,10 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
   };
 
   const validateStep1 = () => {
-    if (!startDate || !endDate) { setAvailError('Seleccioná las fechas.'); return false; }
-    if (new Date(endDate) <= new Date(startDate)) { setAvailError('La fecha de devolución debe ser posterior al retiro.'); return false; }
+    if (!startDate || !endDate) { setAvailError(t.bf_err_dates); return false; }
+    if (new Date(endDate) <= new Date(startDate)) { setAvailError(t.bf_err_return_date); return false; }
     if (!isCarAvailable(car.id, startDate, endDate)) {
-      setAvailError('El vehículo no está disponible en esas fechas. Por favor, elegí otras fechas.');
+      setAvailError(t.bf_err_unavailable);
       return false;
     }
     setAvailError('');
@@ -95,11 +97,11 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
 
   const validateStep4 = () => {
     if (!customerName.trim() || !customerEmail.trim() || !customerPhone.trim() || !customerDni.trim()) {
-      setFormError('Por favor, completá todos los campos requeridos.');
+      setFormError(t.bf_err_required);
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
-      setFormError('El email no es válido.');
+      setFormError(t.bf_err_email);
       return false;
     }
     setFormError('');
@@ -107,14 +109,14 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
   };
 
   const validateStep5 = () => {
-    if (!paymentMethod) { setPayError('Seleccioná un método de pago.'); return false; }
+    if (!paymentMethod) { setPayError(t.bf_err_payment); return false; }
     if (paymentMethod === 'card') {
       if (!cardName || !cardNumber || !cardExpiry || !cardCvc) {
-        setPayError('Completá todos los datos de la tarjeta.');
+        setPayError(t.bf_err_card);
         return false;
       }
     }
-    if (!termsAccepted) { setPayError('Debés aceptar los términos y condiciones.'); return false; }
+    if (!termsAccepted) { setPayError(t.bf_err_terms); return false; }
     setPayError('');
     return true;
   };
@@ -172,23 +174,23 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
         <div className="w-16 h-16 rounded-full bg-green-900/30 border border-green-700/50 flex items-center justify-center mx-auto mb-6">
           <Check className="w-8 h-8 text-green-400" />
         </div>
-        <h2 className="text-white text-2xl font-bold mb-2">¡Reserva Confirmada!</h2>
-        <p className="text-gray-400 text-sm mb-1">Número de reserva</p>
+        <h2 className="text-white text-2xl font-bold mb-2">{t.bf_confirmed_title}</h2>
+        <p className="text-gray-400 text-sm mb-1">{t.bf_confirmed_number}</p>
         <code className="text-[var(--primary)] text-lg font-bold font-mono">{bookingId}</code>
         <p className="text-gray-400 text-sm mt-4 leading-relaxed">
-          Te enviamos un email de confirmación a <strong className="text-white">{customerEmail}</strong> con todos los detalles de tu reserva.
+          {t.bf_confirmed_email} <strong className="text-white">{customerEmail}</strong> {t.bf_confirmed_details}
         </p>
         <div className="mt-6 p-4 rounded-xl bg-white/3 border border-white/8 text-left space-y-2">
-          <p className="text-xs text-gray-500"><span className="text-gray-400">Vehículo:</span> {car.brand} {car.model} {car.year}</p>
-          <p className="text-xs text-gray-500"><span className="text-gray-400">Retiro:</span> {formatDate(startDate)} · {pickupLoc.split('(')[0].trim()}</p>
-          <p className="text-xs text-gray-500"><span className="text-gray-400">Devolución:</span> {formatDate(endDate)} · {returnLoc.split('(')[0].trim()}</p>
-          <p className="text-xs text-gray-500"><span className="text-gray-400">Total:</span> <span className="text-[var(--primary)] font-bold">{formatCurrency(total)}</span></p>
+          <p className="text-xs text-gray-500"><span className="text-gray-400">{t.bf_confirmed_vehicle}</span> {car.brand} {car.model} {car.year}</p>
+          <p className="text-xs text-gray-500"><span className="text-gray-400">{t.bf_confirmed_pickup}</span> {formatDate(startDate)} · {pickupLoc.split('(')[0].trim()}</p>
+          <p className="text-xs text-gray-500"><span className="text-gray-400">{t.bf_confirmed_return}</span> {formatDate(endDate)} · {returnLoc.split('(')[0].trim()}</p>
+          <p className="text-xs text-gray-500"><span className="text-gray-400">{t.bf_confirmed_total}</span> <span className="text-[var(--primary)] font-bold">{formatCurrency(total)}</span></p>
         </div>
         <button
           onClick={() => router.push('/catalogo')}
           className="mt-6 btn-primary w-full py-3.5 rounded-xl font-semibold"
         >
-          Explorar más autos
+          {t.bf_explore_more}
         </button>
       </div>
     );
@@ -231,12 +233,12 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
           <div className="flex items-center gap-3">
             <div>
               <p className="text-white text-sm font-semibold">{car.brand} {car.model}</p>
-              <p className="text-gray-500 text-xs">{days} día{days > 1 ? 's' : ''} · {formatDate(startDate)} → {formatDate(endDate)}</p>
+              <p className="text-gray-500 text-xs">{days} {t.book_days} · {formatDate(startDate)} → {formatDate(endDate)}</p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-[var(--primary)] font-bold text-xl">{formatCurrency(total)}</p>
-            <p className="text-gray-600 text-xs">Total estimado</p>
+            <p className="text-gray-600 text-xs">{t.bf_estimated_total}</p>
           </div>
         </div>
       </div>
@@ -244,10 +246,10 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
       {/* STEP 1 */}
       {step === 1 && (
         <div className="space-y-5">
-          <h2 className="text-white font-bold text-xl">Fechas y puntos de entrega</h2>
+          <h2 className="text-white font-bold text-xl">{t.bf_title_dates}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Fecha de retiro *</label>
+              <label className="block text-sm text-gray-400 mb-2">{t.bf_pickup_date}</label>
               <input
                 type="date"
                 value={startDate}
@@ -257,7 +259,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Fecha de devolución *</label>
+              <label className="block text-sm text-gray-400 mb-2">{t.bf_return_date}</label>
               <input
                 type="date"
                 value={endDate}
@@ -269,12 +271,12 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
           </div>
           {availError && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-900/20 border border-red-800/40 text-red-400 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
               {availError}
             </div>
           )}
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Punto de retiro *</label>
+            <label className="block text-sm text-gray-400 mb-2">{t.bf_pickup_loc}</label>
             <select
               value={pickupLoc}
               onChange={e => setPickupLoc(e.target.value)}
@@ -286,7 +288,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             </select>
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Punto de devolución *</label>
+            <label className="block text-sm text-gray-400 mb-2">{t.bf_return_loc}</label>
             <select
               value={returnLoc}
               onChange={e => setReturnLoc(e.target.value)}
@@ -298,9 +300,9 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             </select>
           </div>
           <div className="p-3 rounded-xl bg-blue-900/15 border border-blue-800/30 flex items-start gap-2">
-            <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+            <Info className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
             <p className="text-blue-300 text-xs leading-relaxed">
-              Entrega gratuita en aeropuerto MIA y FLL. En otros puntos puede aplicar cargo de $25.
+              {t.bf_airport_note}
             </p>
           </div>
         </div>
@@ -309,7 +311,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
       {/* STEP 2 */}
       {step === 2 && (
         <div className="space-y-4">
-          <h2 className="text-white font-bold text-xl">Cobertura de seguro</h2>
+          <h2 className="text-white font-bold text-xl">{t.bf_insurance_title}</h2>
           <div className="space-y-3">
             {INSURANCE_PLANS.map(plan => (
               <div
@@ -324,7 +326,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
               >
                 {plan.recommended && (
                   <div className="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-[var(--primary)] text-[#07070d] text-[10px] font-bold rounded-full">
-                    RECOMENDADO
+                    {t.bf_recommended}
                   </div>
                 )}
                 <div className="flex items-start justify-between mb-2">
@@ -339,10 +341,10 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
                   </div>
                   <div className="text-right">
                     {plan.pricePerDay === 0 ? (
-                      <p className="text-gray-500 text-sm font-medium">Gratis</p>
+                      <p className="text-gray-500 text-sm font-medium">{t.bf_free}</p>
                     ) : (
                       <>
-                        <p className="text-[var(--primary)] font-bold">{formatCurrency(plan.pricePerDay)}/día</p>
+                        <p className="text-[var(--primary)] font-bold">{formatCurrency(plan.pricePerDay)}{t.book_perday}</p>
                         <p className="text-gray-600 text-xs">{formatCurrency(plan.pricePerDay * days)} total</p>
                       </>
                     )}
@@ -353,7 +355,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
                   <div className="ml-8 grid grid-cols-1 sm:grid-cols-2 gap-1">
                     {plan.coverage.map((item, i) => (
                       <div key={i} className="flex items-center gap-1.5 text-xs text-gray-400">
-                        <Check className="w-3 h-3 text-green-400 flex-shrink-0" />
+                        <Check className="w-3 h-3 text-green-400 shrink-0" />
                         {item}
                       </div>
                     ))}
@@ -368,7 +370,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
       {/* STEP 3 */}
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-white font-bold text-xl">Adicionales y extras</h2>
+          <h2 className="text-white font-bold text-xl">{t.bf_extras_title}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {EXTRAS.map(extra => {
               const selected = selectedExtras.find(e => e.extra.id === extra.id);
@@ -387,13 +389,13 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
                       <h3 className="text-white text-sm font-semibold mb-0.5">{extra.name}</h3>
                       <p className="text-gray-500 text-xs leading-relaxed mb-2">{extra.description}</p>
                       <p className="text-[var(--primary)] text-sm font-semibold">
-                        {extra.pricePerDay === 0 ? 'Gratis' : `${formatCurrency(extra.pricePerDay)}/día`}
+                        {extra.pricePerDay === 0 ? t.bf_free : `${formatCurrency(extra.pricePerDay)}${t.book_perday}`}
                       </p>
                     </div>
                     <button
                       onClick={() => handleExtraToggle(extra)}
                       className={cn(
-                        'ml-3 w-7 h-7 rounded-full border flex items-center justify-center text-sm font-bold transition-all flex-shrink-0',
+                        'ml-3 w-7 h-7 rounded-full border flex items-center justify-center text-sm font-bold transition-all shrink-0',
                         selected
                           ? 'bg-[var(--primary)] border-[var(--primary)] text-[#07070d]'
                           : 'border-white/30 text-gray-500 hover:border-white/60'
@@ -404,7 +406,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
                   </div>
                   {selected && extra.maxQty && extra.maxQty > 1 && (
                     <div className="flex items-center gap-3 mt-3 pt-3 border-t border-white/10">
-                      <span className="text-gray-500 text-xs">Cantidad:</span>
+                      <span className="text-gray-500 text-xs">{t.bf_qty}</span>
                       <div className="flex items-center gap-2">
                         <button onClick={() => handleExtraQty(extra.id, -1)} className="w-6 h-6 rounded-md bg-white/10 text-white text-sm flex items-center justify-center hover:bg-white/20">-</button>
                         <span className="text-white text-sm font-bold w-4 text-center">{selected.qty}</span>
@@ -422,13 +424,13 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
       {/* STEP 4 */}
       {step === 4 && (
         <div className="space-y-5">
-          <h2 className="text-white font-bold text-xl">Tus datos personales</h2>
+          <h2 className="text-white font-bold text-xl">{t.bf_personal_title}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: 'Nombre completo *', value: customerName, setter: setCustomerName, placeholder: 'Ej: Carlos García', type: 'text' },
-              { label: 'Email *', value: customerEmail, setter: setCustomerEmail, placeholder: 'tu@email.com', type: 'email' },
-              { label: 'Teléfono *', value: customerPhone, setter: setCustomerPhone, placeholder: '+1 (305) 555-0100', type: 'tel' },
-              { label: 'Pasaporte / DNI *', value: customerDni, setter: setCustomerDni, placeholder: 'Número de documento', type: 'text' },
+              { label: t.bf_full_name, value: customerName, setter: setCustomerName, placeholder: t.bf_name_ph, type: 'text' },
+              { label: t.book_step5 === 'Payment' ? 'Email *' : 'Email *', value: customerEmail, setter: setCustomerEmail, placeholder: 'tu@email.com', type: 'email' },
+              { label: t.bf_phone, value: customerPhone, setter: setCustomerPhone, placeholder: '+1 (305) 555-0100', type: 'tel' },
+              { label: t.bf_dni, value: customerDni, setter: setCustomerDni, placeholder: t.bf_dni_ph, type: 'text' },
             ].map(({ label, value, setter, placeholder, type }) => (
               <div key={label}>
                 <label className="block text-sm text-gray-400 mb-2">{label}</label>
@@ -443,18 +445,18 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             ))}
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Notas adicionales (opcional)</label>
+            <label className="block text-sm text-gray-400 mb-2">{t.bf_notes}</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              placeholder="Horario de llegada, requerimientos especiales..."
+              placeholder={t.bf_notes_ph}
               rows={3}
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[var(--primary)] transition-colors resize-none"
             />
           </div>
           {formError && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-900/20 border border-red-800/40 text-red-400 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
               {formError}
             </div>
           )}
@@ -464,18 +466,18 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
       {/* STEP 5 */}
       {step === 5 && (
         <div className="space-y-5">
-          <h2 className="text-white font-bold text-xl">Resumen y pago</h2>
+          <h2 className="text-white font-bold text-xl">{t.bf_summary_title}</h2>
 
           {/* Cost breakdown */}
           <div className="p-4 rounded-xl bg-white/3 border border-white/8 space-y-3">
-            <h3 className="text-gray-400 text-sm font-medium mb-3">Desglose de costos</h3>
+            <h3 className="text-gray-400 text-sm font-medium mb-3">{t.bf_cost_breakdown}</h3>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">{car.brand} {car.model} × {days} día{days > 1 ? 's' : ''}</span>
+              <span className="text-gray-400">{car.brand} {car.model} × {days} {t.book_days}</span>
               <span className="text-white font-medium">{formatCurrency(subtotalCar)}</span>
             </div>
             {subtotalInsurance > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Seguro: {insurance.name}</span>
+                <span className="text-gray-400">{t.bf_insurance_line} {insurance.name}</span>
                 <span className="text-white font-medium">{formatCurrency(subtotalInsurance)}</span>
               </div>
             )}
@@ -486,17 +488,17 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
               </div>
             ))}
             <div className="border-t border-white/10 pt-3 flex justify-between">
-              <span className="text-white font-bold">Total</span>
+              <span className="text-white font-bold">{t.book_total}</span>
               <span className="text-[var(--primary)] font-bold text-xl">{formatCurrency(total)}</span>
             </div>
           </div>
 
           {/* Payment method */}
           <div>
-            <h3 className="text-white text-sm font-semibold mb-3">Método de pago *</h3>
+            <h3 className="text-white text-sm font-semibold mb-3">{t.bf_payment_title}</h3>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { id: 'card', label: 'Tarjeta', icon: '💳' },
+                { id: 'card', label: t.bf_card, icon: '💳' },
                 { id: 'paypal', label: 'PayPal', icon: '🅿️' },
                 { id: 'crypto', label: 'Crypto', icon: '₿' },
               ].map(method => (
@@ -520,7 +522,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
           {paymentMethod === 'card' && (
             <div className="p-4 rounded-xl bg-white/3 border border-white/8 space-y-4">
               <div>
-                <label className="block text-xs text-gray-400 mb-2">Nombre en la tarjeta *</label>
+                <label className="block text-xs text-gray-400 mb-2">{t.bf_card_name}</label>
                 <input
                   type="text"
                   value={cardName}
@@ -530,7 +532,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-400 mb-2">Número de tarjeta *</label>
+                <label className="block text-xs text-gray-400 mb-2">{t.bf_card_number}</label>
                 <input
                   type="text"
                   value={cardNumber}
@@ -541,7 +543,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-2">Vencimiento *</label>
+                  <label className="block text-xs text-gray-400 mb-2">{t.bf_expiry}</label>
                   <input
                     type="text"
                     value={cardExpiry}
@@ -567,7 +569,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
 
           {(paymentMethod === 'paypal' || paymentMethod === 'crypto') && (
             <div className="p-4 rounded-xl bg-blue-900/15 border border-blue-800/30 text-blue-300 text-sm">
-              En la versión de producción serás redirigido a {paymentMethod === 'paypal' ? 'PayPal' : 'la pasarela de crypto'} para completar el pago de forma segura.
+              {paymentMethod === 'paypal' ? t.bf_redirect_paypal : t.bf_redirect_crypto}
             </div>
           )}
 
@@ -576,24 +578,24 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             <button
               onClick={() => { setTermsAccepted(!termsAccepted); setPayError(''); }}
               className={cn(
-                'mt-0.5 w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-all',
+                'mt-0.5 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-all',
                 termsAccepted ? 'bg-[var(--primary)] border-[var(--primary)]' : 'border-white/30 bg-white/5'
               )}
             >
               {termsAccepted && <Check className="w-3 h-3 text-[#07070d]" />}
             </button>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Acepto los{' '}
-              <span className="text-[var(--primary)] cursor-pointer hover:underline">Términos y Condiciones</span>
-              {' '}y la{' '}
-              <span className="text-[var(--primary)] cursor-pointer hover:underline">Política de Privacidad</span>
+              {t.bf_terms_text}{' '}
+              <span className="text-[var(--primary)] cursor-pointer hover:underline">{t.footer_terms}</span>
+              {' '}{t.bf_terms_and}{' '}
+              <span className="text-[var(--primary)] cursor-pointer hover:underline">{t.bf_terms_privacy}</span>
               {' '}de MiamiDrive.
             </p>
           </div>
 
           {payError && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-900/20 border border-red-800/40 text-red-400 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
               {payError}
             </div>
           )}
@@ -608,14 +610,14 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             className="flex items-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-gray-400 text-sm font-medium hover:border-white/30 hover:text-white transition-all"
           >
             <ChevronLeft className="w-4 h-4" />
-            Volver
+            {t.bf_back}
           </button>
         ) : (
           <button
             onClick={onClose}
             className="flex items-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-gray-400 text-sm font-medium hover:border-white/30 hover:text-white transition-all"
           >
-            Cancelar
+            {t.bf_cancel}
           </button>
         )}
 
@@ -624,7 +626,7 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             onClick={handleNext}
             className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold"
           >
-            Continuar
+            {t.bf_continue}
             <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
@@ -636,12 +638,12 @@ export default function BookingFlow({ car, onClose }: BookingFlowProps) {
             {processing ? (
               <>
                 <div className="w-4 h-4 border-2 border-[#07070d]/30 border-t-[#07070d] rounded-full animate-spin" />
-                Procesando...
+                {t.bf_processing}
               </>
             ) : (
               <>
                 <CreditCard className="w-4 h-4" />
-                Confirmar reserva · {formatCurrency(total)}
+                {t.book_confirm} · {formatCurrency(total)}
               </>
             )}
           </button>

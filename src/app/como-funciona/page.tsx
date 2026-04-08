@@ -1,59 +1,31 @@
-import type { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
-import { Search, Calendar, Car, MapPin, CreditCard, Key, CheckCircle, ArrowRight, Clock, Shield, Phone } from 'lucide-react';
+import { Search, Calendar, Shield, CreditCard, Key, CheckCircle, ArrowRight, Phone } from 'lucide-react';
+import { useLang } from '@/lib/i18n';
 
-export const metadata: Metadata = {
-  title: 'Cómo Funciona — MiamiDrive',
-  description: 'Descubrí lo fácil que es alquilar un auto en Miami con MiamiDrive. Reservá online en minutos y recibí tu vehículo donde lo necesitás.',
-};
-
-const STEPS = [
-  {
-    number: '01',
-    icon: Search,
-    title: 'Explorá el catálogo',
-    description: 'Navegá nuestra flota de más de 15 vehículos. Filtrá por categoría, precio, pasajeros y tipo de combustible para encontrar el auto perfecto para tu viaje.',
-    tips: ['Usá los filtros avanzados', 'Compará precios por categoría', 'Leé las reseñas de otros clientes'],
-  },
-  {
-    number: '02',
-    icon: Calendar,
-    title: 'Seleccioná fechas y ubicación',
-    description: 'Elegí las fechas de tu alquiler y el punto de entrega. Ofrecemos servicio en el aeropuerto MIA, FLL, el puerto de Miami y múltiples ubicaciones en la ciudad.',
-    tips: ['Disponibilidad en tiempo real', '7 puntos de entrega en Miami', 'Retiro y devolución en distintos puntos'],
-  },
-  {
-    number: '03',
-    icon: Shield,
-    title: 'Elegí tu seguro y extras',
-    description: 'Personalizá tu reserva con el plan de seguro que más te convenga y agregá los servicios adicionales que necesites: GPS, silla infantil, conductor adicional y más.',
-    tips: ['4 planes de seguro disponibles', 'Seguro total recomendado', 'Extras opcionales sin compromiso'],
-  },
-  {
-    number: '04',
-    icon: CreditCard,
-    title: 'Pagá de forma segura',
-    description: 'Completá tu reserva con el método de pago que prefieras: tarjeta de crédito/débito, PayPal o transferencia. Tu información siempre está protegida.',
-    tips: ['Tarjeta, PayPal o cripto', 'Pago 100% seguro', 'Confirmación inmediata por email'],
-  },
-  {
-    number: '05',
-    icon: Key,
-    title: 'Retirá y disfrutá',
-    description: 'En la fecha acordada, nuestro equipo te entrega el vehículo en el punto elegido. El auto estará impecable, con el tanque lleno y listo para rodar.',
-    tips: ['Entrega puntual garantizada', 'Vehículo revisado y limpio', 'Asistencia 24/7 durante el alquiler'],
-  },
-];
-
-const FAQS = [
-  { q: '¿Necesito tarjeta de crédito?', a: 'Aceptamos tarjetas de crédito y débito, PayPal y transferencias. Para el retiro del vehículo se requiere una tarjeta de crédito a nombre del conductor principal para el depósito de garantía.' },
-  { q: '¿Qué documentos necesito?', a: 'Licencia de conducir válida (internacional si sos extranjero), pasaporte o documento de identidad, y la tarjeta de crédito. Todos los documentos deben coincidir con el titular de la reserva.' },
-  { q: '¿Puedo cambiar o cancelar mi reserva?', a: 'Sí. Las cancelaciones con más de 48 hs de anticipación tienen reembolso completo. Cancelaciones dentro de las 48 hs tienen un cargo del 50%. Podés modificar fechas con al menos 24 hs de anticipación.' },
-  { q: '¿Hay kilometraje ilimitado?', a: 'Sí, todos nuestros vehículos incluyen kilometraje ilimitado en la tarifa base. No te sorprenderás con cargos extras por distancia recorrida.' },
-  { q: '¿Qué pasa si hay un accidente?', a: 'Contactanos de inmediato al número de emergencias. Si tenés seguro Total o Premium Plus, todos los daños quedan cubiertos. Siempre habrá un agente disponible 24/7.' },
-];
+const STEP_ICONS = [Search, Calendar, Shield, CreditCard, Key];
+const STEP_NUMBERS = ['01', '02', '03', '04', '05'];
 
 export default function ComoFuncionaPage() {
+  const { t } = useLang();
+
+  const STEPS = [
+    { number: STEP_NUMBERS[0], icon: STEP_ICONS[0], title: t.how_s1_title, description: t.how_s1_desc, tips: [t.how_s1_t1, t.how_s1_t2, t.how_s1_t3] },
+    { number: STEP_NUMBERS[1], icon: STEP_ICONS[1], title: t.how_s2_title, description: t.how_s2_desc, tips: [t.how_s2_t1, t.how_s2_t2, t.how_s2_t3] },
+    { number: STEP_NUMBERS[2], icon: STEP_ICONS[2], title: t.how_s3_title, description: t.how_s3_desc, tips: [t.how_s3_t1, t.how_s3_t2, t.how_s3_t3] },
+    { number: STEP_NUMBERS[3], icon: STEP_ICONS[3], title: t.how_s4_title, description: t.how_s4_desc, tips: [t.how_s4_t1, t.how_s4_t2, t.how_s4_t3] },
+    { number: STEP_NUMBERS[4], icon: STEP_ICONS[4], title: t.how_s5_title, description: t.how_s5_desc, tips: [t.how_s5_t1, t.how_s5_t2, t.how_s5_t3] },
+  ];
+
+  const FAQS = [
+    { q: t.how_faq1_q, a: t.how_faq1_a },
+    { q: t.how_faq2_q, a: t.how_faq2_a },
+    { q: t.how_faq3_q, a: t.how_faq3_a },
+    { q: t.how_faq4_q, a: t.how_faq4_a },
+    { q: t.how_faq5_q, a: t.how_faq5_a },
+  ];
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] pt-20">
       {/* Hero */}
@@ -61,19 +33,19 @@ export default function ComoFuncionaPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(200,169,110,0.03)] to-transparent" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <h1 className="text-white text-5xl md:text-6xl font-black tracking-tight mb-6">
-            Simple, rápido y
+            {t.how_page_title1}
             <br />
-            <span className="text-[var(--primary)]">100% online</span>
+            <span className="text-[var(--primary)]">{t.how_page_title2}</span>
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Alquilar un auto en Miami nunca fue tan fácil. Sin filas, sin papeles innecesarios, sin sorpresas. Todo desde tu teléfono o computadora.
+            {t.how_page_sub}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link href="/catalogo" className="btn-primary px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
-              Ver catálogo <ArrowRight className="w-4 h-4" />
+              {t.how_page_catalog} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link href="/contacto" className="px-6 py-3 rounded-xl border border-white/15 text-gray-300 font-medium hover:border-white/30 hover:text-white transition-all flex items-center gap-2">
-              <Phone className="w-4 h-4" /> ¿Tenés dudas?
+              <Phone className="w-4 h-4" /> {t.how_page_questions}
             </Link>
           </div>
         </div>
@@ -101,7 +73,7 @@ export default function ComoFuncionaPage() {
                     <p className="text-gray-400 leading-relaxed text-base">{description}</p>
                   </div>
                   <div className="md:w-52 shrink-0">
-                    <p className="text-gray-600 text-xs font-medium uppercase tracking-wide mb-3">Datos clave</p>
+                    <p className="text-gray-600 text-xs font-medium uppercase tracking-wide mb-3">{t.how_page_keydata}</p>
                     <div className="space-y-2">
                       {tips.map(tip => (
                         <div key={tip} className="flex items-center gap-2 text-sm text-gray-400">
@@ -127,8 +99,8 @@ export default function ComoFuncionaPage() {
       <section className="py-16 pb-24">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">Preguntas frecuentes</h2>
-            <p className="text-gray-500">Las dudas más comunes antes de reservar.</p>
+            <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">{t.how_page_faq_title}</h2>
+            <p className="text-gray-500">{t.how_page_faq_sub}</p>
           </div>
           <div className="space-y-4">
             {FAQS.map(({ q, a }) => (
@@ -141,9 +113,9 @@ export default function ComoFuncionaPage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <p className="text-gray-500 mb-4">¿Tenés otra pregunta?</p>
+            <p className="text-gray-500 mb-4">{t.how_page_more_q}</p>
             <Link href="/contacto" className="btn-primary px-6 py-3 rounded-xl font-semibold inline-flex items-center gap-2">
-              Contactanos <ArrowRight className="w-4 h-4" />
+              {t.how_page_contact} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
